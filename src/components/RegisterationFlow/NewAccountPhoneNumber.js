@@ -1,38 +1,41 @@
 import React, {Component} from 'react';
+import {observer} from 'mobx-react';
+
 import Layout from '../MainLayout/Layout';
-import {Column, Row, Text, TextInput, Image} from '../BasicComponents';
+import {Column, Row, Text, Image} from '../BasicComponents';
+import Input from '../MainComponents/Input';
 import colors from '../../assets/colors';
 import Flag from '../../assets/imgs/input-phone-number_2020-11-23/input-phone-number.png';
 import Arrow from '../../assets/imgs/arrow-right_2020-11-23/arrow-right.png';
-import State from '../../helper/StateManager';
-import {cos} from 'react-native-reanimated';
 
 class NewAccountName extends Component {
   constructor(props) {
     super();
     this.state = {
-      phoneNumber: '',
       disabled: true,
     };
   }
   handleChange = text => {
-    this.setState({phoneNumber: text}, () => {
-      if (
-        this.state.phoneNumber.length > 9 &&
-        this.state.phoneNumber.length < 12
-      ) {
-        this.setState({disabled: false});
-      } else {
-        this.setState({disabled: true});
-      }
-    });
+    const {registerationStore} = this.props;
+    registerationStore.phoneNumber = text;
+    if (
+      registerationStore.phoneNumber.length > 9 &&
+      registerationStore.phoneNumber.length < 12
+    ) {
+      this.setState({
+        disabled: false,
+      });
+    } else {
+      this.setState({
+        disabled: true,
+      });
+    }
   };
   goBack = () => {
     this.props.navigation.goBack();
   };
   handlePress = () => {
-    State.phoneNumber = this.state.phoneNumber;
-    console.log(State);
+    // to be implemented
   };
   render() {
     return (
@@ -60,7 +63,7 @@ class NewAccountName extends Component {
           </Row>
         </Column>
         <Column extendedStyle={{paddingTop: 32}}>
-          <TextInput
+          <Input
             autoFocus
             onChangeText={this.handleChange}
             extendedStyle={TextInputStyle}

@@ -1,41 +1,45 @@
 import React, {Component} from 'react';
+import {observer} from 'mobx-react';
+
 import Layout from '../MainLayout/Layout';
-import {Row, Column, Text, TextInput} from '../BasicComponents';
+import {Row, Column, Text} from '../BasicComponents';
+import Input from '../MainComponents/Input';
 import colors from '../../assets/colors';
-import State from '../../helper/StateManager';
 
 class NewAccountBirthDate extends Component {
   constructor() {
     super();
     this.state = {
-      day: '',
-      month: '',
-      year: '',
       disabled: true,
     };
   }
-  handleChange = (text, name) => {
-    this.setState({[name]: text}, () => {
-      let {day, month, year} = this.state;
-      const currentYear = new Date().getFullYear();
-      if (
-        day > 0 &&
-        day < 32 &&
-        month > 0 &&
-        month < 13 &&
-        year < currentYear &&
-        year > 1900
-      ) {
-        this.setState({disabled: false});
-      } else {
-        this.setState({disabled: true});
-      }
-    });
+
+  setContinueButtonState = () => {
+    const {day, month, year} = this.props.registerationStore;
+    let currentYear = new Date().getFullYear();
+    if (
+      day > 0 &&
+      day < 32 &&
+      month > 0 &&
+      month < 13 &&
+      year < currentYear &&
+      year > 1900
+    ) {
+      this.setState({
+        disabled: false,
+      });
+    } else {
+      this.setState({
+        disabled: true,
+      });
+    }
+  };
+  handleChange = (text, field) => {
+    const {registerationStore} = this.props;
+    registerationStore[field] = text;
+    this.setContinueButtonState();
   };
   handlePress = () => {
-    State.day = this.state.day;
-    State.month = this.state.month;
-    State.year = this.state.year;
     this.props.navigation.navigate('GenderScreen');
   };
   goBack = () => {
@@ -53,35 +57,35 @@ class NewAccountBirthDate extends Component {
             Birthdate
           </Text>
           <Row>
-            <TextInput
+            <Input
               autoFocus
               keyboardType="number-pad"
               placeholder="Day"
               placeholderTextColor={colors.white}
               value={this.state.day}
-              onChangeText={e => this.handleChange(e, 'day')}
+              onChangeText={text => this.handleChange(text, 'day')}
               style={{marginRight: 5}}
               extendedStyle={TextInputStyle}
               onSubmitEditing={() => this.refs.month.focus()}
             />
-            <TextInput
+            <Input
               ref="month"
               keyboardType="number-pad"
               placeholder="Month"
               placeholderTextColor={colors.white}
               value={this.state.month}
-              onChangeText={e => this.handleChange(e, 'month')}
+              onChangeText={text => this.handleChange(text, 'month')}
               style={{marginRight: 5}}
               extendedStyle={TextInputStyle}
               onSubmitEditing={() => this.refs.year.focus()}
             />
-            <TextInput
+            <Input
               ref="year"
               keyboardType="number-pad"
               placeholder="Year"
               value={this.state.year}
               placeholderTextColor={colors.white}
-              onChangeText={e => this.handleChange(e, 'year')}
+              onChangeText={text => this.handleChange(text, 'year')}
               extendedStyle={TextInputStyle}
             />
           </Row>
@@ -100,4 +104,4 @@ const TextInputStyle = {
   textAlign: 'center',
   height: 30,
 };
-export default NewAccountBirthDate;
+export default observer(NewAccountBirthDate);

@@ -1,27 +1,31 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-import NewAccountLandpage from './src/components/RegisterationFlow/NewAccountLandpage';
-import NewAccountName from './src/components/RegisterationFlow/NewAccountName';
-import NewAccountEmail from './src/components/RegisterationFlow/NewAccountEmail';
-import NewAccountBirthDate from './src/components/RegisterationFlow/NewAccountBirthDate';
-import NewAccountGender from './src/components/RegisterationFlow/NewAccountGender';
-import NewAccountPhoneNumber from './src/components/RegisterationFlow/NewAccountPhoneNumber';
-import UserQuery from './src/components/UserQuery';
 import {Provider} from 'mobx-react';
+import screen from 'react-native-splash-screen';
+
+import NewAccountLandpage from './src/components/RegisterationFlow/NewAccountLandpage';
+import {
+  NewAccountNameContainer,
+  NewAccountEmailContainer,
+  NewAccountBirthDateContainer,
+  NewAccountGenderContainer,
+  NewAccountPhoneNumberContainer,
+} from './src/containers';
+import UserQuery from './src/components/UserQuery';
 import rootStore from './src/stores/RootStore';
 
 const RootStack = createStackNavigator(
   {
     LandpageScreen: NewAccountLandpage,
-    NameScreen: NewAccountName,
-    EmailScreen: NewAccountEmail,
-    BirthDateScreen: NewAccountBirthDate,
-    GenderScreen: NewAccountGender,
-    PhoneNumberScreen: NewAccountPhoneNumber,
+    NameScreen: NewAccountNameContainer,
+    EmailScreen: NewAccountEmailContainer,
+    BirthDateScreen: NewAccountBirthDateContainer,
+    GenderScreen: NewAccountGenderContainer,
+    PhoneNumberScreen: NewAccountPhoneNumberContainer,
   },
   {
-    initialRouteName: 'LandpageScreen',
+    initialRouteName: 'NameScreen',
     defaultNavigationOptions: {
       headerShown: false,
     },
@@ -29,12 +33,17 @@ const RootStack = createStackNavigator(
 );
 const AppContainer = createAppContainer(RootStack);
 
-const App = props => {
-  return (
-    <Provider rootStore={rootStore}>
-      <AppContainer />
-    </Provider>
-  );
-};
+class App extends React.Component {
+  componentDidMount() {
+    screen.hide();
+  }
+  render() {
+    return (
+      <Provider rootStore={rootStore}>
+        <AppContainer />
+      </Provider>
+    );
+  }
+}
 
 export default App;

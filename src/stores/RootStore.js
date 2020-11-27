@@ -2,7 +2,7 @@ import RegisterationStoreInstance from './RegisterationStore';
 
 class RootStore {
   constructor() {
-    this.RegisterationStore = RegisterationStoreInstance;
+    this.registerationStore = RegisterationStoreInstance;
   }
 }
 

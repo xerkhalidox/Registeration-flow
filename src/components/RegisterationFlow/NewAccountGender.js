@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 import Layout from '../MainLayout/Layout';
-import {Button, Row, Column, Text, TextInput} from '../BasicComponents';
+import {Button, Row, Column, Text} from '../BasicComponents';
+import Input from '../MainComponents/Input';
 import colors from '../../assets/colors';
-import State from '../../helper/StateManager';
+import {observer} from 'mobx-react';
 
 class NewAccountGender extends Component {
   constructor() {
     super();
     this.state = {
-      gender: '',
       disabled: true,
       maleBtn: {color: colors.white, backgroundColor: colors.waterBlue},
       femaleBtn: {color: colors.white, backgroundColor: colors.waterBlue},
@@ -19,6 +19,8 @@ class NewAccountGender extends Component {
     };
   }
   handlePress = (_, name) => {
+    const {registerationStore} = this.props;
+    registerationStore.gender = name;
     if (name === 'male') {
       this.setState({
         maleBtn: {
@@ -26,7 +28,6 @@ class NewAccountGender extends Component {
           backgroundColor: colors.white,
         },
         femaleBtn: this.initialColors,
-        gender: name,
         disabled: false,
       });
     } else {
@@ -36,7 +37,6 @@ class NewAccountGender extends Component {
           backgroundColor: colors.white,
         },
         maleBtn: this.initialColors,
-        gender: name,
         disabled: false,
       });
     }
@@ -45,7 +45,6 @@ class NewAccountGender extends Component {
     this.props.navigation.goBack();
   };
   handleContinuePress = () => {
-    State.gender = this.state.gender;
     this.props.navigation.navigate('PhoneNumberScreen');
   };
   render() {
@@ -78,7 +77,7 @@ class NewAccountGender extends Component {
               onPress={e => this.handlePress(e, 'female')}>
               <Text color={this.state.femaleBtn.color}>Female</Text>
             </Button>
-            <TextInput
+            <Input
               autoFocus
               extendedStyle={{width: 0}}
               keyboardType="number-pad"
@@ -99,4 +98,4 @@ const buttonStyle = {
   paddingTop: 4,
   paddingBottom: 4,
 };
-export default NewAccountGender;
+export default observer(NewAccountGender);

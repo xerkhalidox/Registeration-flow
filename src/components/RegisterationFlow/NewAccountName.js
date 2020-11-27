@@ -1,31 +1,47 @@
 import React, {Component} from 'react';
-import {inject, observer} from 'mobx-react';
+import PropTypes from 'prop-types';
+import {observer} from 'mobx-react';
+
 import Layout from '../MainLayout/Layout';
-import {Column, Row, Text, TextInput} from '../BasicComponents';
+import {Column, Row, Text} from '../BasicComponents';
 import Input from '../MainComponents/Input';
 import colors from '../../assets/colors';
 import State from '../../helper/StateManager';
-import {action} from 'mobx';
 
-@inject('rootStore')
-@observer
 class NewAccountName extends Component {
   constructor() {
     super();
-    z;
     this.state = {
       disabled: true,
     };
   }
+
   handlePress = () => {
-    State.firstName = this.state.firstName;
-    State.lastName = this.state.lastName;
     this.props.navigation.navigate('EmailScreen');
   };
+
   goBack = () => {
     this.props.navigation.goBack();
   };
+  setContinueButtonState = () => {
+    const {registerationStore} = this.props;
+    if (
+      registerationStore.firstName.length > 3 &&
+      registerationStore.lastName.length > 3
+    ) {
+      this.setState({
+        disabled: false,
+      });
+    }
+  };
+  handleChange = (text, field) => {
+    const {registerationStore} = this.props;
+    registerationStore[field] = text;
+    this.setContinueButtonState();
+  };
+
   render() {
+    const {registerationStore} = this.props;
     return (
       <Layout
         label="What's your name?"
@@ -35,13 +51,13 @@ class NewAccountName extends Component {
         <Row extendedStyle={{paddingTop: 14}}>
           <Column>
             <Text color={colors.white} extendedStyle={{paddingTop: 14}}>
-              {this.props.rootStore.RegisterationStore.firstName}
+              First Name
             </Text>
             <Input
               autoFocus
-              onChangeText={() => 'firstName'}
+              onChangeText={text => this.handleChange(text, 'firstName')}
               extendedStyle={TextInputStyle}
-              //value={this.props.rootStore.RegisterationStore['firstName']}
+              value={registerationStore['firstName']}
             />
           </Column>
           <Column extendedStyle={{paddingLeft: 20}}>
@@ -49,8 +65,9 @@ class NewAccountName extends Component {
               Last Name
             </Text>
             <Input
-              onChangeText={() => 'lastName'}
+              onChangeText={text => this.handleChange(text, 'lastName')}
               extendedStyle={TextInputStyle}
+              value={registerationStore['lastName']}
             />
           </Column>
         </Row>
@@ -58,6 +75,7 @@ class NewAccountName extends Component {
     );
   }
 }
+
 const TextInputStyle = {
   borderBottomWidth: 1,
   borderBottomColor: colors.white,
@@ -68,4 +86,9 @@ const TextInputStyle = {
   paddingLeft: 1,
   height: 25,
 };
-export default NewAccountName;
+
+NewAccountName.propTypes = {
+  registerationStore: PropTypes.object,
+};
+
+export default observer(NewAccountName);

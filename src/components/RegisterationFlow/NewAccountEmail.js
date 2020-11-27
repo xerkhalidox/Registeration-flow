@@ -1,33 +1,33 @@
 import React, {Component} from 'react';
+import {observer} from 'mobx-react';
+
 import Layout from '../MainLayout/Layout';
 import {Column, Text} from '../BasicComponents';
 import Input from '../MainComponents/Input';
 import State from '../../helper/StateManager';
 import colors from '../../assets/colors';
-import {inject} from 'mobx-react';
-import {observable} from 'mobx';
 
-@inject('rootStore')
-@observable
 class NewAccountEmail extends Component {
   constructor() {
     super();
     this.state = {
-      email: '',
       disabled: true,
     };
   }
-  handleChange = text => {
-    this.setState({email: text}, () => {
-      if (this.state.email.length > 8) {
-        this.setState({disabled: false});
-      } else {
-        this.setState({disabled: true});
-      }
-    });
+  setContinueButtonState = () => {
+    const {registerationStore} = this.props;
+    if (registerationStore.email.length > 7) {
+      this.setState({
+        disabled: false,
+      });
+    }
+  };
+  handleChange = (text, field) => {
+    const {registerationStore} = this.props;
+    registerationStore[field] = text;
+    this.setContinueButtonState();
   };
   handlePress = () => {
-    State.email = this.state.email;
     this.props.navigation.navigate('BirthDateScreen');
   };
   goBack = () => {
@@ -47,7 +47,7 @@ class NewAccountEmail extends Component {
           <Input
             keyboardType="email-address"
             value={this.state.email}
-            onChangeText={this.handleChange}
+            onChangeText={text => this.handleChange(text, 'email')}
             extendedStyle={TextInputStyle}
           />
         </Column>
@@ -66,4 +66,4 @@ const TextInputStyle = {
   width: 310,
   height: 25,
 };
-export default NewAccountEmail;
+export default observer(NewAccountEmail);
